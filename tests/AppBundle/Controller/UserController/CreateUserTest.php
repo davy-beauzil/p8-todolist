@@ -5,7 +5,7 @@ namespace Tests\AppBundle\Controller\UserController;
 use AppBundle\Entity\User;
 use Tests\AbstractWebTestCase;
 
-class CreateUserTest extends UserControllerTest
+class CreateUserTest extends UserControllerTestCase
 {
     public function testShowCreateUserPage()
     {

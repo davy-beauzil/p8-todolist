@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Controller\TaskController;
 
 use AppBundle\Entity\Task;
 
-class ToggleTaskTest extends TaskControllerTest
+class ToggleTaskTest extends TaskControllerTestCase
 {
     /** @var Task */
     protected $task;

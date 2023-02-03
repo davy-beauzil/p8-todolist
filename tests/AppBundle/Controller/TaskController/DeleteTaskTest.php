@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Controller\TaskController;
 
 use AppBundle\Entity\Task;
 
-class DeleteTaskTest extends TaskControllerTest
+class DeleteTaskTest extends TaskControllerTestCase
 {
     /** @var Task */
     protected $task;

@@ -5,7 +5,7 @@ namespace Tests\AppBundle\Controller\UserController;
 use AppBundle\Entity\User;
 use Tests\AbstractWebTestCase;
 
-class EditUserTest extends UserControllerTest
+class EditUserTest extends UserControllerTestCase
 {
     /** @var User */
     protected $user;
@@ -13,7 +13,7 @@ class EditUserTest extends UserControllerTest
     public function setUp()
     {
         parent::setUp();
-        $this->user = $this->userRepository->findBy([], [], 1)[0];
+        $this->user = $this->getEditableUser();
     }
 
     public function testShowEditUserPage()

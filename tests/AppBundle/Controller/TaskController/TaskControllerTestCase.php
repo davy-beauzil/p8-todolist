@@ -6,7 +6,7 @@ use AppBundle\Entity\Task;
 use AppBundle\Repository\TaskRepository;
 use Tests\AbstractWebTestCase;
 
-class TaskControllerTest extends AbstractWebTestCase
+class TaskControllerTestCase extends AbstractWebTestCase
 {
     /** @var TaskRepository */
     protected $taskRepository;

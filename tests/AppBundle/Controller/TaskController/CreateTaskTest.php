@@ -6,7 +6,7 @@ use AppBundle\Entity\Task;
 use AppBundle\Repository\TaskRepository;
 use Tests\AbstractWebTestCase;
 
-class CreateTaskTest extends TaskControllerTest
+class CreateTaskTest extends TaskControllerTestCase
 {
     public function testShowCreateTaskPage()
     {

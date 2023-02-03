@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Controller\UserController;
 
 use Tests\AbstractWebTestCase;
 
-class ListUserTest extends UserControllerTest
+class ListUserTest extends UserControllerTestCase
 {
     public function testListUsers()
     {

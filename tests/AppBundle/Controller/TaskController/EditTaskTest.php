@@ -5,7 +5,7 @@ namespace Tests\AppBundle\Controller\TaskController;
 use AppBundle\Entity\Task;
 use Tests\AbstractWebTestCase;
 
-class EditTaskTest extends TaskControllerTest
+class EditTaskTest extends TaskControllerTestCase
 {
     /** @var Task */
     protected $task;

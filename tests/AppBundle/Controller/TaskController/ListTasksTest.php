@@ -4,7 +4,7 @@ namespace Tests\AppBundle\Controller\TaskController;
 
 use Tests\AbstractWebTestCase;
 
-class ListTasksTest extends TaskControllerTest
+class ListTasksTest extends TaskControllerTestCase
 {
     public function testListTasks()
     {
