@@ -3,10 +3,8 @@ security:
         AppBundle\Entity\User: bcrypt
 
     providers:
-        doctrine:
-            entity:
-                class: AppBundle:User
-                property: username
+        custom_user_provider:
+            id: 'app_user_provider'
 
     firewalls:
         dev:
