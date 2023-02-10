@@ -30,16 +30,16 @@ class AbstractWebTestCase extends WebTestCase
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
     }
 
-    protected function logIn()
+    protected function logIn($username = 'davy', $email = 'davy@test.fr', $password = 'test@1234')
     {
         $session = $this->client->getContainer()->get('session');
 
         $firewallName = 'main';
         $user = new User();
-        $user->setUsername('davy');
-        $user->setEmail('davy@test.fr');
-        $user->setPassword('test@1234');
-        $token = new UsernamePasswordToken('davy', null, $firewallName, ['ROLE_ADMIN']);
+        $user->setUsername($username);
+        $user->setEmail($email);
+        $user->setPassword($password);
+        $token = new UsernamePasswordToken($username, null, $firewallName, ['ROLE_ADMIN']);
         $token->setUser($user);
         $session->set('_security_'.$firewallName, serialize($token));
         $session->save();
