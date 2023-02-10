@@ -36,4 +36,3 @@ class LoginTest extends AbstractWebTestCase
         $this->assertEquals(302, $response->getStatusCode());
         $this->assertTrue($response->isRedirect('https://localhost/login'));
     }
-}
