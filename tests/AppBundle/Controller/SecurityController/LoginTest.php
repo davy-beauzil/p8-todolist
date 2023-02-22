@@ -26,7 +26,7 @@ class LoginTest extends AbstractWebTestCase
     public function testLoginWithUserNotFound()
     {
         // Given
-        $this->logIn('not-found-username', 'not-found-email', 'not-found-password');
+        $this->logIn('not-found-username', 'not-found-password');
 
         // When
         $this->client->request('GET', '/');

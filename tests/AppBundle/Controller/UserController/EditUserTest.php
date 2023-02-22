@@ -45,6 +45,7 @@ class EditUserTest extends UserControllerTestCase
     public function testEditUser()
     {
         // Given
+        $this->logIn();
         $randomString = uniqid('', true);
 
         // When
