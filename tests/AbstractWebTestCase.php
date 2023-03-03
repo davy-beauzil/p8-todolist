@@ -1,22 +1,23 @@
 <?php
 
-namespace Tests;
+namespace App\Tests;
 
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
 class AbstractWebTestCase extends WebTestCase
 {
-    /** @var Client */
-    protected $client = null;
+    /** @var KernelBrowser */
+    protected $client;
 
     /** @var EntityManager */
-    protected $entityManager = null;
+    protected $entityManager;
 
-    public function setUp()
+    public function setUp(): void
     {
+        self::ensureKernelShutdown();
         $this->client = static::createClient([], [
             'HTTPS' => 'on',
         ]);
@@ -28,10 +29,16 @@ class AbstractWebTestCase extends WebTestCase
      * @param string $password
      * @return void
      */
-    protected function logIn($username = 'davy', $password = 'test@1234')
+    protected function logIn(string $username = 'davy', string $password = 'test@1234'): void
     {
-        $this->client->setServerParameter('PHP_AUTH_USER', $username);
-        $this->client->setServerParameter('PHP_AUTH_PW', $password);
+        self::ensureKernelShutdown();
+        $this->client = static::createClient([], [
+            'HTTPS' => 'on',
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => $password,
+        ]);
+//        $this->client->setServerParameter('PHP_AUTH_USER', $username);
+//        $this->client->setServerParameter('PHP_AUTH_PW', $password);
     }
 
     /**
