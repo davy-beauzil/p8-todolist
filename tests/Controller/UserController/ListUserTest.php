@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\UserController;
 
 class ListUserTest extends UserControllerTestCase
 {
-    public function testListUsers(): void
+    /**
+     * @test
+     */
+    public function listUsers(): void
     {
         // Given
 
@@ -13,7 +18,7 @@ class ListUserTest extends UserControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Liste des utilisateurs', $response->getContent());
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString('Liste des utilisateurs', $response->getContent());
     }
 }

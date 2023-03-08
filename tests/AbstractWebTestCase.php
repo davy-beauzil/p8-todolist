@@ -1,7 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -9,36 +13,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AbstractWebTestCase extends WebTestCase
 {
-    /** @var KernelBrowser */
+    /**
+     * @var KernelBrowser
+     */
     protected $client;
 
-    /** @var EntityManager */
+    /**
+     * @var EntityManager
+     */
     protected $entityManager;
 
-    public function setUp(): void
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    protected function setUp(): void
     {
         self::ensureKernelShutdown();
         $this->client = static::createClient([], [
             'HTTPS' => 'on',
         ]);
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->client->getContainer()
+            ->get('doctrine')
+            ->getManager();
+        $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
-    /**
-     * @param string $username
-     * @param string $password
-     * @return void
-     */
-    protected function logIn(string $username = 'davy', string $password = 'test@1234'): void
+    protected function logIn(string $username = 'davy'): void
     {
-        self::ensureKernelShutdown();
-        $this->client = static::createClient([], [
-            'HTTPS' => 'on',
-            'PHP_AUTH_USER' => $username,
-            'PHP_AUTH_PW' => $password,
-        ]);
-//        $this->client->setServerParameter('PHP_AUTH_USER', $username);
-//        $this->client->setServerParameter('PHP_AUTH_PW', $password);
+        $this->client->loginUser($this->userRepository->findOneBy([
+            'username' => $username,
+        ]));
     }
 
     /**
@@ -52,11 +58,13 @@ class AbstractWebTestCase extends WebTestCase
     {
         $crawler = $this->client->request('GET', $route);
 
-        if(!$loggedIn){
-            $this->logIn('', '');
+        if (! $loggedIn) {
+            $this->client->getCookieJar()
+                ->clear();
         }
 
-        $form = $crawler->selectButton($button)->form();
+        $form = $crawler->selectButton($button)
+            ->form();
         $this->client->submit($form, $data);
 
         return $this->client->getResponse();

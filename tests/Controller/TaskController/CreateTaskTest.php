@@ -1,13 +1,15 @@
 <?php
 
-namespace App\Tests\Controller\TaskController;
+declare(strict_types=1);
 
-use AppBundle\Entity\Task;
-use AppBundle\Repository\TaskRepository;
+namespace App\Tests\Controller\TaskController;
 
 class CreateTaskTest extends TaskControllerTestCase
 {
-    public function testShowCreateTaskPage()
+    /**
+     * @test
+     */
+    public function showCreateTaskPage()
     {
         // Given
         $this->logIn();
@@ -17,84 +19,114 @@ class CreateTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Ajouter', $response->getContent());
-        $this->assertContains('Retour à la liste des tâches', $response->getContent());
-    }
-
-    public function testShowCreateTaskPageWithoutBeLoggedIn()
-    {
-        // Given
-
-        // When
-        $this->client->request('GET', '/tasks/create');
-        $response = $this->client->getResponse();
-
-        // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
-    }
-
-    public function testCreateTask()
-    {
-        // Given
-        $this->logIn();
-        $randomString = uniqid(__FUNCTION__, true);
-
-        // When
-        $response = $this->submitForm('/tasks/create', 'Ajouter', ['task' => ['title' => $randomString, 'content' => $randomString]]);
-        $task = $this->taskRepository->findOneBy(['title' => $randomString, 'content' => $randomString]);
-
-        // Then
-        $this->assertNotNull($task);
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('/tasks'));
-    }
-
-    public function testCreateTaskWithoutBeLoggedIn()
-    {
-        // Given
-        $this->logIn();
-        $randomString = uniqid(__FUNCTION__, true);
-
-        // When
-        $response = $this->submitForm('/tasks/create', 'Ajouter', ['task' => ['title' => $randomString, 'content' => $randomString]], false);
-        $task = $this->taskRepository->findOneBy(['title' => $randomString, 'content' => $randomString]);
-
-        // Then
-        $this->assertNull($task);
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertStringContainsString('Ajouter', $response->getContent());
+        static::assertStringContainsString('Retour à la liste des tâches', $response->getContent());
     }
 
     /**
-     * @var string $title
-     * @var string $content
-     * @dataProvider testCreateTaskNotValid_dataProvider
+     * @test
      */
-    public function testCreateTaskNotValid($title, $content)
+    public function showCreateTaskPageWithoutBeLoggedIn()
+    {
+        // Given
+
+        // When
+        $this->client->request('GET', '/tasks/create');
+        $response = $this->client->getResponse();
+
+        // Then
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
+    }
+
+    /**
+     * @test
+     */
+    public function createTask()
+    {
+        // Given
+        $this->logIn();
+        $randomString = uniqid(__FUNCTION__, true);
+
+        // When
+        $response = $this->submitForm('/tasks/create', 'Ajouter', [
+            'task' => [
+                'title' => $randomString,
+                'content' => $randomString,
+            ],
+        ]);
+        $task = $this->taskRepository->findOneBy([
+            'title' => $randomString,
+            'content' => $randomString,
+        ]);
+
+        // Then
+        static::assertNotNull($task);
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
+    }
+
+    /**
+     * @test
+     */
+    public function createTaskWithoutBeLoggedIn()
+    {
+        // Given
+        $this->logIn();
+        $randomString = uniqid(__FUNCTION__, true);
+
+        // When
+        $response = $this->submitForm('/tasks/create', 'Ajouter', [
+            'task' => [
+                'title' => $randomString,
+                'content' => $randomString,
+            ],
+        ], false);
+        $task = $this->taskRepository->findOneBy([
+            'title' => $randomString,
+            'content' => $randomString,
+        ]);
+
+        // Then
+        static::assertNull($task);
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
+    }
+
+    /**
+     * @var string
+     * @var string
+     * @dataProvider createTaskNotValid_dataProvider
+     *
+     * @test
+     */
+    public function createTaskNotValid($title, $content)
     {
         // Given
         $this->logIn();
 
         // When
-        $response = $this->submitForm('/tasks/create', 'Ajouter', ['task' => ['title' => $title, 'content' => $content]]);
-        $task = $this->taskRepository->findOneBy(['title' => $title, 'content' => $content]);
-
+        $response = $this->submitForm('/tasks/create', 'Ajouter', [
+            'task' => [
+                'title' => $title,
+                'content' => $content,
+            ],
+        ]);
+        $task = $this->taskRepository->findOneBy([
+            'title' => $title,
+            'content' => $content,
+        ]);
 
         // Then
-        $this->assertNull($task);
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Ajouter', $response->getContent());
-        $this->assertContains('Retour à la liste des tâches', $response->getContent());
+        static::assertNull($task);
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertStringContainsString('Ajouter', $response->getContent());
+        static::assertStringContainsString('Retour à la liste des tâches', $response->getContent());
     }
 
-    public function testCreateTaskNotValid_dataProvider()
+    public function createTaskNotValid_dataProvider()
     {
-        return [
-            ['test_title', ''],
-            ['', 'test_content'],
-            ['', ''],
-        ];
+        return [['test_title', ''], ['', 'test_content'], ['', '']];
     }
 }

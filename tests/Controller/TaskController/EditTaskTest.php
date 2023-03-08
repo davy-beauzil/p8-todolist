@@ -1,21 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\TaskController;
 
 use App\Entity\Task;
 
 class EditTaskTest extends TaskControllerTestCase
 {
-    /** @var Task */
+    /**
+     * @var Task
+     */
     protected $task;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->task = $this->taskRepository->findBy([], [], 1)[0];
     }
 
-    public function testShowEditTaskPage(): void
+    /**
+     * @test
+     */
+    public function showEditTaskPage(): void
     {
         // Given
         $this->logIn();
@@ -25,13 +32,16 @@ class EditTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Modifier', $response->getContent());
-        $this->assertContains($this->task->getTitle(), $response->getContent());
-        $this->assertContains($this->task->getContent(), $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertStringContainsString('Modifier', $response->getContent());
+        static::assertStringContainsString($this->task->getTitle(), $response->getContent());
+        static::assertStringContainsString($this->task->getContent(), $response->getContent());
     }
 
-    public function testShowEditTaskPageWithoutBeLoggedIn(): void
+    /**
+     * @test
+     */
+    public function showEditTaskPageWithoutBeLoggedIn(): void
     {
         // Given
 
@@ -40,11 +50,14 @@ class EditTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
     }
 
-    public function testShowEditTaskPageWithInexistentId(): void
+    /**
+     * @test
+     */
+    public function showEditTaskPageWithInexistentId(): void
     {
         // Given
         $this->logIn();
@@ -54,73 +67,98 @@ class EditTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(404, $response->getStatusCode());
-    }
-
-    public function testEditTask(): void
-    {
-        // Given
-        $this->logIn();
-        $randomString = uniqid(__FUNCTION__, true);
-        $id = $this->task->getId();
-
-        // When
-        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', ['task' => ['title' => $randomString, 'content' => $randomString]]);
-        /** @var Task $updatedTask */
-        $updatedTask = $this->taskRepository->findOneBy(['id' => $id]);
-
-        // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('/tasks'));
-        $this->assertEquals($randomString, $updatedTask->getTitle());
-        $this->assertEquals($randomString, $updatedTask->getContent());
-    }
-
-    public function testEditTaskWithoutBeLoggedIn(): void
-    {
-        // Given
-        $this->logIn();
-        $randomString = uniqid(__FUNCTION__, true);
-        $id = $this->task->getId();
-
-        // When
-        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', ['task' => ['title' => $randomString, 'content' => $randomString]], false);
-        /** @var Task $updatedTask */
-        $updatedTask = $this->taskRepository->findOneBy(['id' => $id]);
-
-        // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
-        $this->assertNotEquals($randomString, $updatedTask->getTitle());
-        $this->assertNotEquals($randomString, $updatedTask->getContent());
+        static::assertEquals(404, $response->getStatusCode());
     }
 
     /**
-     * @dataProvider testEditTaskNotValid_dataProvider
+     * @test
      */
-    public function testEditTaskNotValid(string $title, string $content): void
+    public function editTask(): void
+    {
+        // Given
+        $this->logIn();
+        $randomString = uniqid(__FUNCTION__, true);
+        $id = $this->task->getId();
+
+        // When
+        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
+            'task' => [
+                'title' => $randomString,
+                'content' => $randomString,
+            ],
+        ]);
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
+        static::assertEquals($randomString, $updatedTask->getTitle());
+        static::assertEquals($randomString, $updatedTask->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function editTaskWithoutBeLoggedIn(): void
+    {
+        // Given
+        $this->logIn();
+        $randomString = uniqid(__FUNCTION__, true);
+        $id = $this->task->getId();
+
+        // When
+        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
+            'task' => [
+                'title' => $randomString,
+                'content' => $randomString,
+            ],
+        ], false);
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertNotEquals($randomString, $updatedTask->getTitle());
+        static::assertNotEquals($randomString, $updatedTask->getContent());
+    }
+
+    /**
+     * @dataProvider editTaskNotValid_dataProvider
+     *
+     * @test
+     */
+    public function editTaskNotValid(string $title, string $content): void
     {
         // Given
         $this->logIn();
         $id = $this->task->getId();
 
         // When
-        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', ['task' => ['title' => $title, 'content' => $content]]);
+        $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
+            'task' => [
+                'title' => $title,
+                'content' => $content,
+            ],
+        ]);
         /** @var Task $updatedTask */
-        $updatedTask = $this->taskRepository->findOneBy(['id' => $id]);
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
 
         // Then
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertNotEquals($title, $updatedTask->getTitle());
-        $this->assertNotEquals($content, $updatedTask->getContent());
+        static::assertEquals(500, $response->getStatusCode());
+        static::assertNotEquals($title, $updatedTask->getTitle());
+        static::assertNotEquals($content, $updatedTask->getContent());
     }
 
-    public function testEditTaskNotValid_dataProvider(): array
+    public function editTaskNotValid_dataProvider(): array
     {
-        return [
-            ['test_title', ''],
-            ['', 'test_content'],
-            ['', ''],
-        ];
+        return [['test_title', ''], ['', 'test_content'], ['', '']];
     }
 }

@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\DefaultController;
 
 use App\Tests\AbstractWebTestCase;
 
 class HomepageTest extends AbstractWebTestCase
 {
-    public function testShowHomePage(): void
+    /**
+     * @test
+     */
+    public function showHomePage(): void
     {
         // Given
         $this->logIn();
@@ -20,10 +25,13 @@ class HomepageTest extends AbstractWebTestCase
         $content = $response->getContent();
 
         // Then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !', $content);
-        $this->assertContains('Créer une nouvelle tâche', $content);
-        $this->assertContains('Consulter la liste des tâches à faire', $content);
-        $this->assertContains('Consulter la liste des tâches terminées', $content);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString(
+            'Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !',
+            $content
+        );
+        static::assertStringContainsString('Créer une nouvelle tâche', $content);
+        static::assertStringContainsString('Consulter la liste des tâches à faire', $content);
+        static::assertStringContainsString('Consulter la liste des tâches terminées', $content);
     }
 }

@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\TaskController;
 
 class ListTasksTest extends TaskControllerTestCase
 {
-    public function testListTasks()
+    /**
+     * @test
+     */
+    public function listTasks()
     {
         // Given
         $this->logIn();
@@ -14,11 +19,14 @@ class ListTasksTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Créer une tâche', $response->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertStringContainsString('Créer une tâche', $response->getContent());
     }
 
-    public function testListTasksWithoutBeLoggedIn()
+    /**
+     * @test
+     */
+    public function listTasksWithoutBeLoggedIn()
     {
         // Given
 
@@ -27,7 +35,7 @@ class ListTasksTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
     }
 }
