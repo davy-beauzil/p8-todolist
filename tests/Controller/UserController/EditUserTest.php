@@ -25,8 +25,8 @@ class EditUserTest extends UserControllerTestCase
 
         // Then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Modifier', $response->getContent());
-        $this->assertContains($this->user->getUsername(), $response->getContent());
+        $this->assertStringContainsString('Modifier', $response->getContent());
+        $this->assertStringContainsString($this->user->getUsername(), $response->getContent());
     }
 
     public function testShowEditUserPageWithInexistentId(): void
@@ -68,34 +68,6 @@ class EditUserTest extends UserControllerTestCase
         $this->assertTrue($response->isRedirect('/users'));
     }
 
-//    /**
-//     * @dataProvider testCreateUserNotValid_dataProvider
-//     */
-//    public function testEditUserNotValid(string $username, string $firstPassword, string $secondPassword, string $email, int $statusCode = 500, string $message = null): void
-//    {
-//        // Given
-//
-//        // When
-//        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
-//            'user' => [
-//                'username' => $username,
-//                'password' => [
-//                    'first' => $firstPassword,
-//                    'second' => $secondPassword,
-//                ],
-//                'email' => $email
-//            ]
-//        ]);
-//        $user = $this->userRepository->findOneBy(['username' => $username, 'email' => $email]);
-//
-//        // Then
-//        $this->assertNull($user);
-//        $this->assertSame($statusCode, $response->getStatusCode());
-//        if(200 === $statusCode){
-//            $this->assertContains($message, $response->getContent());
-//        }
-//    }
-
     public function testEditUserTooLongUsername(): void
     {
         // Given
@@ -116,7 +88,7 @@ class EditUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertContains("SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'username'", $response->getContent());
+        $this->assertStringContainsString("SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'username'", $response->getContent());
     }
 
     public function testEditUserWithDifferentPasswords(): void
@@ -139,7 +111,7 @@ class EditUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Les deux mots de passe doivent correspondre.', $response->getContent());
+        $this->assertStringContainsString('Les deux mots de passe doivent correspondre.', $response->getContent());
     }
 
     public function testEditUserWithBadFormatEmail(): void
@@ -162,7 +134,7 @@ class EditUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
     }
 
     public function testEditUserWithTooLongEmail(): void
@@ -185,6 +157,6 @@ class EditUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
     }
 }

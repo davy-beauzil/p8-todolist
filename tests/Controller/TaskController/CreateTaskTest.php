@@ -2,8 +2,7 @@
 
 namespace App\Tests\Controller\TaskController;
 
-use AppBundle\Entity\Task;
-use AppBundle\Repository\TaskRepository;
+use App\Entity\User;
 
 class CreateTaskTest extends TaskControllerTestCase
 {
@@ -18,8 +17,8 @@ class CreateTaskTest extends TaskControllerTestCase
 
         // Then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Ajouter', $response->getContent());
-        $this->assertContains('Retour à la liste des tâches', $response->getContent());
+        $this->assertStringContainsString('Ajouter', $response->getContent());
+        $this->assertStringContainsString('Retour à la liste des tâches', $response->getContent());
     }
 
     public function testShowCreateTaskPageWithoutBeLoggedIn()
@@ -70,7 +69,7 @@ class CreateTaskTest extends TaskControllerTestCase
     /**
      * @var string $title
      * @var string $content
-     * @dataProvider testCreateTaskNotValid_dataProvider
+     * @dataProvider createTaskNotValid_dataProvider
      */
     public function testCreateTaskNotValid($title, $content)
     {
@@ -85,11 +84,11 @@ class CreateTaskTest extends TaskControllerTestCase
         // Then
         $this->assertNull($task);
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Ajouter', $response->getContent());
-        $this->assertContains('Retour à la liste des tâches', $response->getContent());
+        $this->assertStringContainsString('Ajouter', $response->getContent());
+        $this->assertStringContainsString('Retour à la liste des tâches', $response->getContent());
     }
 
-    public function testCreateTaskNotValid_dataProvider()
+    public function createTaskNotValid_dataProvider()
     {
         return [
             ['test_title', ''],

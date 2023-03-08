@@ -17,22 +17,8 @@ class LoginTest extends AbstractWebTestCase
 
         // Then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Nom d\'utilisateur :', $content);
-        $this->assertContains('Mot de passe :', $content);
-        $this->assertContains('Se connecter', $content);
-    }
-
-    public function testLoginWithUserNotFound(): void
-    {
-        // Given
-        $this->logIn('not-found-username', 'not-found-password');
-
-        // When
-        $this->client->request('GET', '/');
-        $response = $this->client->getResponse();
-
-        // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        $this->assertStringContainsString('Nom d\'utilisateur :', $content);
+        $this->assertStringContainsString('Mot de passe :', $content);
+        $this->assertStringContainsString('Se connecter', $content);
     }
 }

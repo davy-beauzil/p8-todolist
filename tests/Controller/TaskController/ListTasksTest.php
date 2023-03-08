@@ -15,7 +15,7 @@ class ListTasksTest extends TaskControllerTestCase
 
         // Then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Créer une tâche', $response->getContent());
+        $this->assertStringContainsString('Créer une tâche', $response->getContent());
     }
 
     public function testListTasksWithoutBeLoggedIn()

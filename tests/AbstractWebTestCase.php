@@ -2,6 +2,8 @@
 
 namespace App\Tests;
 
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -15,6 +17,9 @@ class AbstractWebTestCase extends WebTestCase
     /** @var EntityManager */
     protected $entityManager;
 
+    /** @var UserRepository */
+    protected $userRepository;
+
     public function setUp(): void
     {
         self::ensureKernelShutdown();
@@ -22,23 +27,16 @@ class AbstractWebTestCase extends WebTestCase
             'HTTPS' => 'on',
         ]);
         $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+        $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
     /**
      * @param string $username
-     * @param string $password
      * @return void
      */
-    protected function logIn(string $username = 'davy', string $password = 'test@1234'): void
+    protected function logIn(string $username = 'davy'): void
     {
-        self::ensureKernelShutdown();
-        $this->client = static::createClient([], [
-            'HTTPS' => 'on',
-            'PHP_AUTH_USER' => $username,
-            'PHP_AUTH_PW' => $password,
-        ]);
-//        $this->client->setServerParameter('PHP_AUTH_USER', $username);
-//        $this->client->setServerParameter('PHP_AUTH_PW', $password);
+        $this->client->loginUser($this->userRepository->findOneBy(['username' => $username]));
     }
 
     /**
@@ -53,7 +51,7 @@ class AbstractWebTestCase extends WebTestCase
         $crawler = $this->client->request('GET', $route);
 
         if(!$loggedIn){
-            $this->logIn('', '');
+            $this->client->getCookieJar()->clear();
         }
 
         $form = $crawler->selectButton($button)->form();

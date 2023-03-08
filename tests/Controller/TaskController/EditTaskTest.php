@@ -26,9 +26,9 @@ class EditTaskTest extends TaskControllerTestCase
 
         // Then
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertContains('Modifier', $response->getContent());
-        $this->assertContains($this->task->getTitle(), $response->getContent());
-        $this->assertContains($this->task->getContent(), $response->getContent());
+        $this->assertStringContainsString('Modifier', $response->getContent());
+        $this->assertStringContainsString($this->task->getTitle(), $response->getContent());
+        $this->assertStringContainsString($this->task->getContent(), $response->getContent());
     }
 
     public function testShowEditTaskPageWithoutBeLoggedIn(): void
@@ -96,7 +96,7 @@ class EditTaskTest extends TaskControllerTestCase
     }
 
     /**
-     * @dataProvider testEditTaskNotValid_dataProvider
+     * @dataProvider editTaskNotValid_dataProvider
      */
     public function testEditTaskNotValid(string $title, string $content): void
     {
@@ -115,7 +115,7 @@ class EditTaskTest extends TaskControllerTestCase
         $this->assertNotEquals($content, $updatedTask->getContent());
     }
 
-    public function testEditTaskNotValid_dataProvider(): array
+    public function editTaskNotValid_dataProvider(): array
     {
         return [
             ['test_title', ''],

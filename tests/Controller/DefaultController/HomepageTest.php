@@ -21,9 +21,9 @@ class HomepageTest extends AbstractWebTestCase
 
         // Then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !', $content);
-        $this->assertContains('Créer une nouvelle tâche', $content);
-        $this->assertContains('Consulter la liste des tâches à faire', $content);
-        $this->assertContains('Consulter la liste des tâches terminées', $content);
+        $this->assertStringContainsString('Bienvenue sur Todo List, l\'application vous permettant de gérer l\'ensemble de vos tâches sans effort !', $content);
+        $this->assertStringContainsString('Créer une nouvelle tâche', $content);
+        $this->assertStringContainsString('Consulter la liste des tâches à faire', $content);
+        $this->assertStringContainsString('Consulter la liste des tâches terminées', $content);
     }
 }

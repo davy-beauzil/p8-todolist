@@ -14,6 +14,6 @@ class ListUserTest extends UserControllerTestCase
 
         // Then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Liste des utilisateurs', $response->getContent());
+        $this->assertStringContainsString('Liste des utilisateurs', $response->getContent());
     }
 }

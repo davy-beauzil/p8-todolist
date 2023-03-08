@@ -18,7 +18,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // Then
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Créer un utilisateur', $response->getContent());
+        $this->assertStringContainsString('Créer un utilisateur', $response->getContent());
     }
 
     public function testCreateUser(): void
@@ -87,7 +87,7 @@ class CreateUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(500, $response->getStatusCode());
-        $this->assertContains("SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'username'", $response->getContent());
+        $this->assertStringContainsString("SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'username'", $response->getContent());
     }
 
     public function testCreateUserWithDifferentPasswords(): void
@@ -110,7 +110,7 @@ class CreateUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Les deux mots de passe doivent correspondre.', $response->getContent());
+        $this->assertStringContainsString('Les deux mots de passe doivent correspondre.', $response->getContent());
     }
 
     public function testCreateUserWithBadFormatEmail(): void
@@ -133,7 +133,7 @@ class CreateUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
     }
 
     public function testCreateUserWithTooLongEmail(): void
@@ -156,6 +156,6 @@ class CreateUserTest extends UserControllerTestCase
         // Then
         $this->assertNull($user);
         $this->assertSame(200, $response->getStatusCode());
-        $this->assertContains('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
     }
 }
