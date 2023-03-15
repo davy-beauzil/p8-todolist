@@ -1,8 +1,9 @@
 {
     "type": "project",
+    "name": "davybeauzil/p8todolist",
     "license": "proprietary",
     "require": {
-        "php": ">=7.1.3",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "doctrine/annotations": "^1.0",
@@ -24,6 +25,7 @@
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "*",
         "fzaninotto/faker": "^1.9",
+        "icanhazstring/composer-unused": "^0.8.6",
         "phpstan/phpstan": "^1.10",
         "phpstan/phpstan-beberlei-assert": "^1.1",
         "phpstan/phpstan-deprecation-rules": "^1.1",
