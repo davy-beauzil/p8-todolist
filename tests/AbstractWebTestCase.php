@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests;
 
 use App\Entity\User;
@@ -11,32 +13,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AbstractWebTestCase extends WebTestCase
 {
-    /** @var KernelBrowser */
+    /**
+     * @var KernelBrowser
+     */
     protected $client;
 
-    /** @var EntityManager */
+    /**
+     * @var EntityManager
+     */
     protected $entityManager;
 
-    /** @var UserRepository */
+    /**
+     * @var UserRepository
+     */
     protected $userRepository;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         self::ensureKernelShutdown();
         $this->client = static::createClient([], [
             'HTTPS' => 'on',
         ]);
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->client->getContainer()
+            ->get('doctrine')
+            ->getManager();
         $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
-    /**
-     * @param string $username
-     * @return void
-     */
     protected function logIn(string $username = 'davy'): void
     {
-        $this->client->loginUser($this->userRepository->findOneBy(['username' => $username]));
+        $this->client->loginUser($this->userRepository->findOneBy([
+            'username' => $username,
+        ]));
     }
 
     /**
@@ -50,11 +58,13 @@ class AbstractWebTestCase extends WebTestCase
     {
         $crawler = $this->client->request('GET', $route);
 
-        if(!$loggedIn){
-            $this->client->getCookieJar()->clear();
+        if (! $loggedIn) {
+            $this->client->getCookieJar()
+                ->clear();
         }
 
-        $form = $crawler->selectButton($button)->form();
+        $form = $crawler->selectButton($button)
+            ->form();
         $this->client->submit($form, $data);
 
         return $this->client->getResponse();

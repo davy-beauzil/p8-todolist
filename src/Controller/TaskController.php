@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\Task;
@@ -7,25 +9,17 @@ use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
 
 class TaskController extends AbstractController
 {
-    /**
-     * @var TaskRepository $taskRepository
-     */
-    private $taskRepository;
+    private TaskRepository $taskRepository;
 
-    /**
-     * @var ManagerRegistry $doctrine
-     */
-    private $doctrine;
-    public function __construct(
-        TaskRepository $taskRepository,
-        ManagerRegistry $doctrine
-    )
+    private ManagerRegistry $doctrine;
+
+    public function __construct(TaskRepository $taskRepository, ManagerRegistry $doctrine)
     {
         $this->taskRepository = $taskRepository;
         $this->doctrine = $doctrine;
@@ -36,7 +30,9 @@ class TaskController extends AbstractController
      */
     public function listAction(): Response
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepository->findAll()]);
+        return $this->render('task/list.html.twig', [
+            'tasks' => $this->taskRepository->findAll(),
+        ]);
     }
 
     /**
@@ -60,7 +56,9 @@ class TaskController extends AbstractController
             return $this->redirectToRoute('task_list');
         }
 
-        return $this->render('task/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('task/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -73,7 +71,8 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->doctrine->getManager()->flush();
+            $this->doctrine->getManager()
+                ->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');
 
@@ -91,8 +90,9 @@ class TaskController extends AbstractController
      */
     public function toggleTaskAction(Task $task): Response
     {
-        $task->toggle(!$task->isDone());
-        $this->doctrine->getManager()->flush();
+        $task->toggle(! $task->isDone());
+        $this->doctrine->getManager()
+            ->flush();
 
         $this->addFlash('success', sprintf('La tâche %s a bien été marquée comme faite.', $task->getTitle()));
 

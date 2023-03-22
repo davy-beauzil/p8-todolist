@@ -1,51 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Controller;
 
 use App\Entity\User;
 use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 
 class UserController extends AbstractController
 {
-    /**
-     * @var UserPasswordHasherInterface
-     */
-    private $hasher;
+    private UserPasswordHasherInterface $hasher;
 
-    /**
-     * @var UserRepository
-     */
-    private $userRepository;
+    private UserRepository $userRepository;
 
-    /**
-     * @var ManagerRegistry $doctrine
-     */
-    private $doctrine;
-
+    private ManagerRegistry $doctrine;
 
     public function __construct(
         UserPasswordHasherInterface $hasher,
         UserRepository $userRepository,
         ManagerRegistry $doctrine
-    )
-    {
+    ) {
         $this->hasher = $hasher;
         $this->userRepository = $userRepository;
         $this->doctrine = $doctrine;
     }
+
     /**
      * @Route("/users", name="user_list")
      */
     public function listAction(): Response
     {
-        return $this->render('user/list.html.twig', ['users' => $this->userRepository->findAll()]);
+        return $this->render('user/list.html.twig', [
+            'users' => $this->userRepository->findAll(),
+        ]);
     }
 
     /**
@@ -71,7 +65,9 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user_list');
         }
 
-        return $this->render('user/create.html.twig', ['form' => $form->createView()]);
+        return $this->render('user/create.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     /**
@@ -87,13 +83,17 @@ class UserController extends AbstractController
             $password = $this->hasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
 
-            $this->doctrine->getManager()->flush();
+            $this->doctrine->getManager()
+                ->flush();
 
             $this->addFlash('success', "L'utilisateur a bien été modifié");
 
             return $this->redirectToRoute('user_list');
         }
 
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('user/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
+        ]);
     }
 }

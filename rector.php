@@ -12,12 +12,7 @@ use Rector\Set\ValueObject\SetList;
 use Rector\Symfony\Set\SymfonySetList;
 
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->paths([
-        __DIR__ . '/config',
-        __DIR__ . '/public',
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
-    ]);
+    $rectorConfig->paths([__DIR__ . '/config', __DIR__ . '/public', __DIR__ . '/src', __DIR__ . '/tests']);
 
     // register a single rule
     $rectorConfig->rule(InlineConstructorDefaultToPropertyRector::class);
@@ -29,9 +24,9 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(SymfonySetList::SYMFONY_CODE_QUALITY);
     $rectorConfig->import(SymfonySetList::SYMFONY_52_VALIDATOR_ATTRIBUTES);
     $rectorConfig->import(SymfonySetList::SYMFONY_CONSTRUCTOR_INJECTION);
-//    $rectorConfig->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
+    //    $rectorConfig->import(SymfonySetList::ANNOTATIONS_TO_ATTRIBUTES);
     $rectorConfig->import(DoctrineSetList::DOCTRINE_CODE_QUALITY);
-//    $rectorConfig->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
+    //    $rectorConfig->import(DoctrineSetList::ANNOTATIONS_TO_ATTRIBUTES);
     $rectorConfig->import(PHPUnitSetList::PHPUNIT_EXCEPTION);
     $rectorConfig->import(PHPUnitSetList::PHPUNIT_SPECIFIC_METHOD);
     $rectorConfig->import(PHPUnitSetList::PHPUNIT_80);

@@ -1,12 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\SecurityController;
 
 use App\Tests\AbstractWebTestCase;
 
 class LoginTest extends AbstractWebTestCase
 {
-    public function testShowLoginPage(): void
+    /**
+     * @test
+     */
+    public function showLoginPage(): void
     {
         // Given
 
@@ -16,9 +21,9 @@ class LoginTest extends AbstractWebTestCase
         $content = $response->getContent();
 
         // Then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('Nom d\'utilisateur :', $content);
-        $this->assertStringContainsString('Mot de passe :', $content);
-        $this->assertStringContainsString('Se connecter', $content);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString('Nom d\'utilisateur :', $content);
+        static::assertStringContainsString('Mot de passe :', $content);
+        static::assertStringContainsString('Se connecter', $content);
     }
 }

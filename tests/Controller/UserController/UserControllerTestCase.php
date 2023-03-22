@@ -1,17 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\UserController;
 
-use App\Tests\AbstractWebTestCase;
 use App\Entity\User;
 use App\Repository\TaskRepository;
+use App\Tests\AbstractWebTestCase;
 
 class UserControllerTestCase extends AbstractWebTestCase
 {
-    /** @var TaskRepository */
+    /**
+     * @var TaskRepository
+     */
     protected $userRepository;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->userRepository = $this->entityManager->getRepository(User::class);

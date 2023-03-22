@@ -1,21 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\TaskController;
 
 use App\Entity\Task;
 
 class DeleteTaskTest extends TaskControllerTestCase
 {
-    /** @var Task */
+    /**
+     * @var Task
+     */
     protected $task;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->task = $this->taskRepository->findBy([], [], 1)[0];
     }
 
-    public function testDeleteTask(): void
+    /**
+     * @test
+     */
+    public function deleteTask(): void
     {
         // Given
         $this->logIn();
@@ -25,15 +32,20 @@ class DeleteTaskTest extends TaskControllerTestCase
         $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
         $response = $this->client->getResponse();
         /** @var Task $updatedTask */
-        $updatedTask = $this->taskRepository->findOneBy(['id' => $id]);
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
 
         // Then
-        $this->assertNull($updatedTask);
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('/tasks'));
+        static::assertNull($updatedTask);
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
     }
 
-    public function testDeleteTaskWithoutBeLoggedIn(): void
+    /**
+     * @test
+     */
+    public function deleteTaskWithoutBeLoggedIn(): void
     {
         // Given
         $id = $this->task->getId();
@@ -43,11 +55,14 @@ class DeleteTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
     }
 
-    public function testDeleteTaskWithInexistentId(): void
+    /**
+     * @test
+     */
+    public function deleteTaskWithInexistentId(): void
     {
         // Given
         $this->logIn();
@@ -57,7 +72,6 @@ class DeleteTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(404, $response->getStatusCode());
+        static::assertEquals(404, $response->getStatusCode());
     }
-
 }

@@ -1,21 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\TaskController;
 
 use App\Entity\Task;
 
 class ToggleTaskTest extends TaskControllerTestCase
 {
-    /** @var Task */
+    /**
+     * @var Task
+     */
     protected $task;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->task = $this->taskRepository->findBy([], [], 1)[0];
     }
 
-    public function testToggleTask(): void
+    /**
+     * @test
+     */
+    public function toggleTask(): void
     {
         // Given
         $this->logIn();
@@ -26,15 +33,20 @@ class ToggleTaskTest extends TaskControllerTestCase
         $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
         $response = $this->client->getResponse();
         /** @var Task $updatedTask */
-        $updatedTask = $this->taskRepository->findOneBy(['id' => $id]);
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
 
         // Then
-        $this->assertSame(!$isDone, $updatedTask->isDone());
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('/tasks'));
+        static::assertSame(! $isDone, $updatedTask->isDone());
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
     }
 
-    public function testToggleTaskWithoutBeLoggedIn(): void
+    /**
+     * @test
+     */
+    public function toggleTaskWithoutBeLoggedIn(): void
     {
         // Given
         $id = $this->task->getId();
@@ -44,11 +56,14 @@ class ToggleTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('https://localhost/login'));
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('https://localhost/login'));
     }
 
-    public function testToggleTaskWithInexistentId(): void
+    /**
+     * @test
+     */
+    public function toggleTaskWithInexistentId(): void
     {
         // Given
         $this->logIn();
@@ -58,7 +73,6 @@ class ToggleTaskTest extends TaskControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertEquals(404, $response->getStatusCode());
+        static::assertEquals(404, $response->getStatusCode());
     }
-
 }

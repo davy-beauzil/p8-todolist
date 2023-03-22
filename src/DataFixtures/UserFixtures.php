@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DataFixtures;
 
 use App\Entity\User;
@@ -10,7 +12,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends Fixture
 {
-    private $encoder;
+    private UserPasswordHasherInterface $encoder;
 
     public function __construct(UserPasswordHasherInterface $encoder)
     {
@@ -26,7 +28,7 @@ class UserFixtures extends Fixture
         $manager->persist($userLogin);
 
         $faker = Factory::create('fr');
-        for($i = 0 ; $i < 20 ; $i++){
+        for ($i = 0; $i < 20; $i++) {
             $user = new User();
             $user->setUsername($faker->userName);
             $user->setEmail($faker->email);

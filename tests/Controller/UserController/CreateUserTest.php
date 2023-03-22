@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Tests\Controller\UserController;
 
 use App\Entity\User;
-use Doctrine\DBAL\Exception\DriverException;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 class CreateUserTest extends UserControllerTestCase
 {
-    public function testShowCreateUserPage(): void
+    /**
+     * @test
+     */
+    public function showCreateUserPage(): void
     {
         // Given
 
@@ -17,11 +20,14 @@ class CreateUserTest extends UserControllerTestCase
         $response = $this->client->getResponse();
 
         // Then
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('Créer un utilisateur', $response->getContent());
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString('Créer un utilisateur', $response->getContent());
     }
 
-    public function testCreateUser(): void
+    /**
+     * @test
+     */
+    public function createUser(): void
     {
         // Given
         $randomString = uniqid('', true);
@@ -34,18 +40,23 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => $randomString,
                     'second' => $randomString,
                 ],
-                'email' => sprintf('%s@test.fr', $randomString)
-            ]
+                'email' => sprintf('%s@test.fr', $randomString),
+            ],
         ]);
-        $newUser = $this->userRepository->findOneBy(['username' => $randomString]);
+        $newUser = $this->userRepository->findOneBy([
+            'username' => $randomString,
+        ]);
 
         // Then
-        $this->assertInstanceOf(User::class, $newUser);
-        $this->assertSame(302, $response->getStatusCode());
-        $this->assertTrue($response->isRedirect('/users'));
+        static::assertInstanceOf(User::class, $newUser);
+        static::assertSame(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/users'));
     }
 
-    public function testCreateUserWithAlreadyExistedUsername(): void
+    /**
+     * @test
+     */
+    public function createUserWithAlreadyExistedUsername(): void
     {
         // Given
 
@@ -57,17 +68,23 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => 'password',
                     'second' => 'password',
                 ],
-                'email' => 'email@create.fr'
-            ]
+                'email' => 'email@create.fr',
+            ],
         ]);
-        $user = $this->userRepository->findOneBy(['username' => 'davy', 'email' => 'email@create.fr']);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'davy',
+            'email' => 'email@create.fr',
+        ]);
 
         // Then
-        $this->assertNull($user);
-        $this->assertSame(500, $response->getStatusCode());
+        static::assertNull($user);
+        static::assertSame(500, $response->getStatusCode());
     }
 
-    public function testCreateUserWithTooLongUsername(): void
+    /**
+     * @test
+     */
+    public function createUserWithTooLongUsername(): void
     {
         // Given
 
@@ -79,18 +96,27 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => 'password',
                     'second' => 'password',
                 ],
-                'email' => 'email@create.fr'
-            ]
+                'email' => 'email@create.fr',
+            ],
         ]);
-        $user = $this->userRepository->findOneBy(['username' => 'un-très-très-très-long-username', 'email' => 'email@create.fr']);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'un-très-très-très-long-username',
+            'email' => 'email@create.fr',
+        ]);
 
         // Then
-        $this->assertNull($user);
-        $this->assertSame(500, $response->getStatusCode());
-        $this->assertStringContainsString("SQLSTATE[22001]: String data, right truncated: 1406 Data too long for column 'username'", $response->getContent());
+        static::assertNull($user);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString(
+            'Le nom d&#039;utilisateur peut faire jusqu&#039;à 25 caractères',
+            $response->getContent()
+        );
     }
 
-    public function testCreateUserWithDifferentPasswords(): void
+    /**
+     * @test
+     */
+    public function createUserWithDifferentPasswords(): void
     {
         // Given
 
@@ -102,18 +128,24 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => 'password-1',
                     'second' => 'password-2',
                 ],
-                'email' => 'email@create.fr'
-            ]
+                'email' => 'email@create.fr',
+            ],
         ]);
-        $user = $this->userRepository->findOneBy(['username' => 'username', 'email' => 'email@create.fr']);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'username',
+            'email' => 'email@create.fr',
+        ]);
 
         // Then
-        $this->assertNull($user);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('Les deux mots de passe doivent correspondre.', $response->getContent());
+        static::assertNull($user);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString('Les deux mots de passe doivent correspondre.', $response->getContent());
     }
 
-    public function testCreateUserWithBadFormatEmail(): void
+    /**
+     * @test
+     */
+    public function createUserWithBadFormatEmail(): void
     {
         // Given
 
@@ -125,18 +157,27 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => 'password',
                     'second' => 'password',
                 ],
-                'email' => 'bad-email'
-            ]
+                'email' => 'bad-email',
+            ],
         ]);
-        $user = $this->userRepository->findOneBy(['username' => 'username', 'email' => 'bad-email']);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'username',
+            'email' => 'bad-email',
+        ]);
 
         // Then
-        $this->assertNull($user);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        static::assertNull($user);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString(
+            'Le format de l&#039;adresse n&#039;est pas correcte.',
+            $response->getContent()
+        );
     }
 
-    public function testCreateUserWithTooLongEmail(): void
+    /**
+     * @test
+     */
+    public function createUserWithTooLongEmail(): void
     {
         // Given
 
@@ -148,14 +189,20 @@ class CreateUserTest extends UserControllerTestCase
                     'first' => 'password',
                     'second' => 'password',
                 ],
-                'email' => 'un-très-très-très-très-très-très-très-très-très-long-email@test.fr'
-            ]
+                'email' => 'un-très-très-très-très-très-très-très-très-très-long-email@test.fr',
+            ],
         ]);
-        $user = $this->userRepository->findOneBy(['username' => 'username', 'email' => 'un-très-très-très-très-très-très-très-très-très-long-email@test.fr']);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'username',
+            'email' => 'un-très-très-très-très-très-très-très-très-très-long-email@test.fr',
+        ]);
 
         // Then
-        $this->assertNull($user);
-        $this->assertSame(200, $response->getStatusCode());
-        $this->assertStringContainsString('Le format de l&#039;adresse n&#039;est pas correcte.', $response->getContent());
+        static::assertNull($user);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString(
+            'Le format de l&#039;adresse n&#039;est pas correcte.',
+            $response->getContent()
+        );
     }
 }
