@@ -21,11 +21,12 @@ security:
             pattern: ^/
             form_login:
                 login_path: login
-                check_path: login_check
+                check_path: login
                 always_use_default_target_path: true
                 default_target_path: /
                 provider: app_user_provider
-            logout: ~
+            logout:
+                path: logout
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
