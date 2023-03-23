@@ -54,6 +54,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->username;
     }
 
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
     public function setUsername(string $username): void
     {
         $this->username = $username;
