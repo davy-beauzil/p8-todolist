@@ -19,14 +19,11 @@ security:
             provider: app_user_provider
             lazy: true
             pattern: ^/
-            form_login:
-                login_path: login
-                check_path: login
-                always_use_default_target_path: true
-                default_target_path: /
-                provider: app_user_provider
+            custom_authenticator: App\Security\AppCustomAuthenticator
             logout:
-                path: logout
+                path: app_logout
+                # where to redirect after logout
+                # target: app_any_route
 
     access_control:
         - { path: ^/login, roles: PUBLIC_ACCESS }
