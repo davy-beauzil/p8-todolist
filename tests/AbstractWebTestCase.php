@@ -1,51 +1,47 @@
 <?php
 
-namespace Tests;
+declare(strict_types=1);
 
-use AppBundle\Entity\Task;
-use AppBundle\Entity\User;
-use Doctrine\Common\Persistence\ObjectManager;
+namespace App\Tests;
+
+use App\Entity\User;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
-use Symfony\Bundle\FrameworkBundle\Client;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoder;
-use Tests\AppBundle\Controller\TaskControllerTest;
 
 class AbstractWebTestCase extends WebTestCase
 {
-    /** @var Client */
-    protected $client = null;
+    protected KernelBrowser $client;
 
-    /** @var EntityManager */
-    protected $entityManager = null;
+    /**
+     * @var EntityManager
+     */
+    protected $entityManager;
 
-    public function setUp()
+    /**
+     * @var UserRepository
+     */
+    protected $userRepository;
+
+    protected function setUp(): void
     {
+        self::ensureKernelShutdown();
         $this->client = static::createClient([], [
-            'HTTPS' => 'on'
+            'HTTPS' => 'on',
         ]);
-        $this->entityManager = $this->client->getContainer()->get('doctrine')->getManager();
+        $this->entityManager = $this->client->getContainer()
+            ->get('doctrine')
+            ->getManager();
+        $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
-    protected function logIn($username = 'davy', $email = 'davy@test.fr', $password = 'test@1234')
+    protected function logIn(string $username = 'davy'): void
     {
-        $session = $this->client->getContainer()->get('session');
-
-        $firewallName = 'main';
-        $user = new User();
-        $user->setUsername($username);
-        $user->setEmail($email);
-        $user->setPassword($password);
-        $token = new UsernamePasswordToken($username, null, $firewallName, ['ROLE_ADMIN']);
-        $token->setUser($user);
-        $session->set('_security_'.$firewallName, serialize($token));
-        $session->save();
-
-        $cookie = new Cookie($session->getName(), $session->getId());
-        $this->client->getCookieJar()->set($cookie);
+        $this->client->loginUser($this->userRepository->findOneBy([
+            'username' => $username,
+        ]));
     }
 
     /**
@@ -55,16 +51,18 @@ class AbstractWebTestCase extends WebTestCase
      * @param array $data Data to submit
      * @return Response
      */
-    public function submitForm($route, $button, $data, $loggedIn = true)
+    protected function submitForm($route, $button, $data, $loggedIn = true)
     {
         $crawler = $this->client->request('GET', $route);
 
-        if(!$loggedIn){
-            $this->client->getCookieJar()->clear();
+        if (! $loggedIn) {
+            $this->client->getCookieJar()
+                ->clear();
         }
 
-        $form = $crawler->selectButton($button)->form();
-        $crawler = $this->client->submit($form, $data);
+        $form = $crawler->selectButton($button)
+            ->form();
+        $this->client->submit($form, $data);
 
         return $this->client->getResponse();
     }

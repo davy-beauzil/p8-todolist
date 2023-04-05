@@ -1,0 +1,12 @@
+parameters:
+    hash: $2y$13$cweJN8.cOL61.nmrTEY69.KWzhCLdC59iRWQZIFmmVMlcljeuEeGS
+
+App\Entity\User:
+    user_{1..20}:
+        username: <username()>
+        password: <{hash}>
+        email: <email()>
+    davy:
+        username: 'davy'
+        password: <{hash}>
+        email: 'davy@localhost'

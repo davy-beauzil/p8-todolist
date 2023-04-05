@@ -1,0 +1,33 @@
+security:
+    password_hashers:
+        App\Entity\User: auto
+
+    providers:
+        users_in_memory: { memory: null }
+        app_user_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            provider: app_user_provider
+            lazy: true
+            pattern: ^/
+            form_login:
+                login_path: login
+                check_path: login
+                always_use_default_target_path: true
+                default_target_path: /
+                provider: app_user_provider
+            logout:
+                path: logout
+
+    access_control:
+        - { path: ^/login, roles: PUBLIC_ACCESS }
+        - { path: ^/users, roles: PUBLIC_ACCESS }
+        - { path: ^/, roles: ROLE_USER }
