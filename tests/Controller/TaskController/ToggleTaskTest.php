@@ -8,10 +8,7 @@ use App\Entity\Task;
 
 class ToggleTaskTest extends TaskControllerTestCase
 {
-    /**
-     * @var Task
-     */
-    protected $task;
+    protected Task $task;
 
     protected function setUp(): void
     {
@@ -27,7 +24,7 @@ class ToggleTaskTest extends TaskControllerTestCase
         // Given
         $this->logIn();
         $id = $this->task->getId();
-        $isDone = $this->task->isDone();
+        $isDone = $this->task->isDone;
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
@@ -38,7 +35,7 @@ class ToggleTaskTest extends TaskControllerTestCase
         ]);
 
         // Then
-        static::assertSame(! $isDone, $updatedTask->isDone());
+        static::assertSame(! $isDone, $updatedTask->isDone);
         static::assertEquals(302, $response->getStatusCode());
         static::assertTrue($response->isRedirect('/tasks'));
     }

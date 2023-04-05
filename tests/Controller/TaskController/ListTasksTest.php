@@ -9,7 +9,7 @@ class ListTasksTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function listTasks()
+    public function listTasks(): void
     {
         // Given
         $this->logIn();
@@ -26,7 +26,7 @@ class ListTasksTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function listTasksWithoutBeLoggedIn()
+    public function listTasksWithoutBeLoggedIn(): void
     {
         // Given
 

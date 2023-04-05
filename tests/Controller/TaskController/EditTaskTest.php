@@ -8,10 +8,7 @@ use App\Entity\Task;
 
 class EditTaskTest extends TaskControllerTestCase
 {
-    /**
-     * @var Task
-     */
-    protected $task;
+    protected Task $task;
 
     protected function setUp(): void
     {
@@ -34,8 +31,8 @@ class EditTaskTest extends TaskControllerTestCase
         // Then
         static::assertEquals(200, $response->getStatusCode());
         static::assertStringContainsString('Modifier', $response->getContent());
-        static::assertStringContainsString($this->task->getTitle(), $response->getContent());
-        static::assertStringContainsString($this->task->getContent(), $response->getContent());
+        static::assertStringContainsString($this->task->title, $response->getContent());
+        static::assertStringContainsString($this->task->content, $response->getContent());
     }
 
     /**
@@ -82,7 +79,7 @@ class EditTaskTest extends TaskControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
-            'task' => [
+            'task_form' => [
                 'title' => $randomString,
                 'content' => $randomString,
             ],
@@ -95,8 +92,8 @@ class EditTaskTest extends TaskControllerTestCase
         // Then
         static::assertEquals(302, $response->getStatusCode());
         static::assertTrue($response->isRedirect('/tasks'));
-        static::assertEquals($randomString, $updatedTask->getTitle());
-        static::assertEquals($randomString, $updatedTask->getContent());
+        static::assertEquals($randomString, $updatedTask->title);
+        static::assertEquals($randomString, $updatedTask->content);
     }
 
     /**
@@ -111,7 +108,7 @@ class EditTaskTest extends TaskControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
-            'task' => [
+            'task_form' => [
                 'title' => $randomString,
                 'content' => $randomString,
             ],
@@ -124,8 +121,8 @@ class EditTaskTest extends TaskControllerTestCase
         // Then
         static::assertEquals(302, $response->getStatusCode());
         static::assertTrue($response->isRedirect('https://localhost/login'));
-        static::assertNotEquals($randomString, $updatedTask->getTitle());
-        static::assertNotEquals($randomString, $updatedTask->getContent());
+        static::assertNotEquals($randomString, $updatedTask->title);
+        static::assertNotEquals($randomString, $updatedTask->content);
     }
 
     /**
@@ -141,7 +138,7 @@ class EditTaskTest extends TaskControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/tasks/%s/edit', $id), 'Modifier', [
-            'task' => [
+            'task_form' => [
                 'title' => $title,
                 'content' => $content,
             ],
@@ -152,9 +149,9 @@ class EditTaskTest extends TaskControllerTestCase
         ]);
 
         // Then
-        static::assertEquals(500, $response->getStatusCode());
-        static::assertNotEquals($title, $updatedTask->getTitle());
-        static::assertNotEquals($content, $updatedTask->getContent());
+        static::assertEquals(200, $response->getStatusCode());
+        static::assertNotEquals($title, $updatedTask->title);
+        static::assertNotEquals($content, $updatedTask->content);
     }
 
     public function editTaskNotValid_dataProvider(): array

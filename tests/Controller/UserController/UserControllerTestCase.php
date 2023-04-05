@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace App\Tests\Controller\UserController;
 
 use App\Entity\User;
-use App\Repository\TaskRepository;
+use App\Repository\UserRepository;
 use App\Tests\AbstractWebTestCase;
 
 class UserControllerTestCase extends AbstractWebTestCase
 {
-    /**
-     * @var TaskRepository
-     */
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->userRepository = $this->entityManager->getRepository(User::class);
+        /** @var UserRepository $userRepository */
+        $userRepository = $this->entityManager->getRepository(User::class);
+        $this->userRepository = $userRepository;
     }
 
     public function getEditableUser(): User

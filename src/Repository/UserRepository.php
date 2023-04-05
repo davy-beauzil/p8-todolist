@@ -14,4 +14,10 @@ class UserRepository extends EntityRepository
     {
         parent::__construct($em, $em->getClassMetadata(User::class));
     }
+
+    public function save(User $user): void
+    {
+        $this->_em->persist($user);
+        $this->_em->flush();
+    }
 }

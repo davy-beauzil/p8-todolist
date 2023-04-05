@@ -3,5 +3,4 @@ App\Entity\Task:
         title: <sentence(3)>
         content: <paragraph(1)>
         createdAt: <date_create()>
-        __calls:
-            - toggle (50%?): [<boolval(1)>]
+        isDone: <boolval(1)>

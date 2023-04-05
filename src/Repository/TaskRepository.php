@@ -14,4 +14,16 @@ class TaskRepository extends EntityRepository
     {
         parent::__construct($em, $em->getClassMetadata(Task::class));
     }
+
+    public function save(Task $task): void
+    {
+        $this->_em->persist($task);
+        $this->_em->flush();
+    }
+
+    public function remove(Task $task): void
+    {
+        $this->_em->remove($task);
+        $this->_em->flush();
+    }
 }

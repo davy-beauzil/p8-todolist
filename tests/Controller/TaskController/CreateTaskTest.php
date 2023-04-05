@@ -9,7 +9,7 @@ class CreateTaskTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function showCreateTaskPage()
+    public function showCreateTaskPage(): void
     {
         // Given
         $this->logIn();
@@ -27,7 +27,7 @@ class CreateTaskTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function showCreateTaskPageWithoutBeLoggedIn()
+    public function showCreateTaskPageWithoutBeLoggedIn(): void
     {
         // Given
 
@@ -43,7 +43,7 @@ class CreateTaskTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function createTask()
+    public function createTask(): void
     {
         // Given
         $this->logIn();
@@ -51,7 +51,7 @@ class CreateTaskTest extends TaskControllerTestCase
 
         // When
         $response = $this->submitForm('/tasks/create', 'Ajouter', [
-            'task' => [
+            'task_form' => [
                 'title' => $randomString,
                 'content' => $randomString,
             ],
@@ -70,7 +70,7 @@ class CreateTaskTest extends TaskControllerTestCase
     /**
      * @test
      */
-    public function createTaskWithoutBeLoggedIn()
+    public function createTaskWithoutBeLoggedIn(): void
     {
         // Given
         $this->logIn();
@@ -78,7 +78,7 @@ class CreateTaskTest extends TaskControllerTestCase
 
         // When
         $response = $this->submitForm('/tasks/create', 'Ajouter', [
-            'task' => [
+            'task_form' => [
                 'title' => $randomString,
                 'content' => $randomString,
             ],
@@ -95,20 +95,18 @@ class CreateTaskTest extends TaskControllerTestCase
     }
 
     /**
-     * @var string
-     * @var string
      * @dataProvider createTaskNotValid_dataProvider
      *
      * @test
      */
-    public function createTaskNotValid($title, $content)
+    public function createTaskNotValid(string $title, string $content): void
     {
         // Given
         $this->logIn();
 
         // When
         $response = $this->submitForm('/tasks/create', 'Ajouter', [
-            'task' => [
+            'task_form' => [
                 'title' => $title,
                 'content' => $content,
             ],
@@ -125,7 +123,7 @@ class CreateTaskTest extends TaskControllerTestCase
         static::assertStringContainsString('Retour à la liste des tâches', $response->getContent());
     }
 
-    public function createTaskNotValid_dataProvider()
+    public function createTaskNotValid_dataProvider(): array
     {
         return [['test_title', ''], ['', 'test_content'], ['', '']];
     }

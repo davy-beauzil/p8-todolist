@@ -15,15 +15,9 @@ class AbstractWebTestCase extends WebTestCase
 {
     protected KernelBrowser $client;
 
-    /**
-     * @var EntityManager
-     */
-    protected $entityManager;
+    protected EntityManager $entityManager;
 
-    /**
-     * @var UserRepository
-     */
-    protected $userRepository;
+    protected UserRepository $userRepository;
 
     protected function setUp(): void
     {
@@ -49,9 +43,8 @@ class AbstractWebTestCase extends WebTestCase
      * @param string $route Route to the form
      * @param string $button Content in button to find it
      * @param array $data Data to submit
-     * @return Response
      */
-    protected function submitForm($route, $button, $data, $loggedIn = true)
+    protected function submitForm(string $route, string $button, array $data, bool $loggedIn = true): Response
     {
         $crawler = $this->client->request('GET', $route);
 

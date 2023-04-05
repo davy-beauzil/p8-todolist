@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Form;
+namespace App\Form\Task;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 
-class TaskType extends AbstractType
+class TaskForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {

@@ -34,7 +34,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => $randomString,
                 'password' => [
                     'first' => $randomString,
@@ -62,7 +62,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'davy',
                 'password' => [
                     'first' => 'password',
@@ -78,7 +78,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // Then
         static::assertNull($user);
-        static::assertSame(500, $response->getStatusCode());
+        static::assertSame(200, $response->getStatusCode());
     }
 
     /**
@@ -90,7 +90,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'un-très-très-très-long-username',
                 'password' => [
                     'first' => 'password',
@@ -122,7 +122,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password-1',
@@ -151,7 +151,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password',
@@ -183,7 +183,7 @@ class CreateUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password',
