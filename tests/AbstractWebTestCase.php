@@ -13,10 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AbstractWebTestCase extends WebTestCase
 {
-    /**
-     * @var KernelBrowser
-     */
-    protected $client;
+    protected KernelBrowser $client;
 
     /**
      * @var EntityManager
