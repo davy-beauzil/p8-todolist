@@ -8,10 +8,7 @@ use App\Entity\User;
 
 class EditUserTest extends UserControllerTestCase
 {
-    /**
-     * @var User
-     */
-    protected $user;
+    protected User $user;
 
     protected function setUp(): void
     {
@@ -33,7 +30,7 @@ class EditUserTest extends UserControllerTestCase
         // Then
         static::assertSame(200, $response->getStatusCode());
         static::assertStringContainsString('Modifier', $response->getContent());
-        static::assertStringContainsString($this->user->getUsername(), $response->getContent());
+        static::assertStringContainsString($this->user->username, $response->getContent());
     }
 
     /**
@@ -62,7 +59,7 @@ class EditUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
-            'user' => [
+            'user_form' => [
                 'username' => $randomString,
                 'password' => [
                     'first' => $randomString,
@@ -77,10 +74,10 @@ class EditUserTest extends UserControllerTestCase
         ]);
 
         // Then
-        static::assertSame($randomString, $updatedUser->getUsername());
-        static::assertSame(sprintf('%s@test.fr', $randomString), $updatedUser->getEmail());
         static::assertSame(302, $response->getStatusCode());
         static::assertTrue($response->isRedirect('/users'));
+        static::assertSame($randomString, $updatedUser->username);
+        static::assertSame(sprintf('%s@test.fr', $randomString), $updatedUser->email);
     }
 
     /**
@@ -92,7 +89,7 @@ class EditUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
-            'user' => [
+            'user_form' => [
                 'username' => 'un-très-très-très-long-username',
                 'password' => [
                     'first' => 'password',
@@ -124,7 +121,7 @@ class EditUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password-1',
@@ -153,7 +150,7 @@ class EditUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password',
@@ -185,7 +182,7 @@ class EditUserTest extends UserControllerTestCase
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
-            'user' => [
+            'user_form' => [
                 'username' => 'username',
                 'password' => [
                     'first' => 'password',

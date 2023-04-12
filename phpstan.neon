@@ -4,10 +4,6 @@ parameters:
         - src
     excludePaths:
         - %currentWorkingDirectory%/src/Kernel.php
-    ignoreErrors:
-        -
-          message: '#Property [a-zA-Z0-9\\_]+::\$id is never written, only read.#'
-          path: src/Entity/*
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
     symfony:

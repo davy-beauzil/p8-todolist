@@ -8,15 +8,12 @@ use App\Entity\Task;
 
 class DeleteTaskTest extends TaskControllerTestCase
 {
-    /**
-     * @var Task
-     */
-    protected $task;
+    protected Task $task;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->task = $this->taskRepository->findBy([], [], 1)[0];
+        $this->task = $this->taskRepository->findBy([], limit: 1)[0];
     }
 
     /**

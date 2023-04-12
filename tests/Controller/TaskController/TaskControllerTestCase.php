@@ -10,14 +10,13 @@ use App\Tests\AbstractWebTestCase;
 
 class TaskControllerTestCase extends AbstractWebTestCase
 {
-    /**
-     * @var TaskRepository
-     */
-    protected $taskRepository;
+    protected TaskRepository $taskRepository;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->taskRepository = $this->entityManager->getRepository(Task::class);
+        /** @var TaskRepository $taskRepository */
+        $taskRepository = $this->entityManager->getRepository(Task::class);
+        $this->taskRepository = $taskRepository;
     }
 }
