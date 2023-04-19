@@ -12,6 +12,7 @@ class ListUserTest extends UserControllerTestCase
     public function listUsers(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $this->client->request('GET', '/users');
@@ -20,5 +21,21 @@ class ListUserTest extends UserControllerTestCase
         // Then
         static::assertSame(200, $response->getStatusCode());
         static::assertStringContainsString('Liste des utilisateurs', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
+    public function noAdminCannotlistUsers(): void
+    {
+        // Given
+        $this->loginAsUser();
+
+        // When
+        $this->client->request('GET', '/users');
+        $response = $this->client->getResponse();
+
+        // Then
+        static::assertEquals(403, $response->getStatusCode());
     }
 }

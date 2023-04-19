@@ -31,10 +31,17 @@ class AbstractWebTestCase extends WebTestCase
         $this->userRepository = $this->entityManager->getRepository(User::class);
     }
 
-    protected function logIn(string $username = 'davy'): void
+    protected function loginAsAdmin(): void
     {
         $this->client->loginUser($this->userRepository->findOneBy([
-            'username' => $username,
+            'username' => 'davy',
+        ]));
+    }
+
+    protected function loginAsUser(): void
+    {
+        $this->client->loginUser($this->userRepository->findOneBy([
+            'username' => 'john',
         ]));
     }
 

@@ -1,12 +1,19 @@
 parameters:
-    hash: $2y$13$cweJN8.cOL61.nmrTEY69.KWzhCLdC59iRWQZIFmmVMlcljeuEeGS
+    hash: $2y$13$u52krWp5LNvu3K5f8/EYM.rDXP.rGUYIYHqVvogKPwVOsrU5Qzmnu
 
 App\Entity\User:
     user_{1..20}:
         username: <username()>
         password: <{hash}>
         email: <email()>
+        roles: ['ROLE_USER']
     davy:
         username: 'davy'
         password: <{hash}>
         email: 'davy@localhost'
+        roles: ['ROLE_ADMIN']
+    john:
+        username: 'john'
+        password: <{hash}>
+        email: 'john@localhost'
+        roles: [ 'ROLE_USER' ]

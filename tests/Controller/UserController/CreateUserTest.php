@@ -11,9 +11,10 @@ class CreateUserTest extends UserControllerTestCase
     /**
      * @test
      */
-    public function showCreateUserPage(): void
+    public function adminCanShowCreateUserPage(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $this->client->request('GET', '/users/create');
@@ -27,13 +28,30 @@ class CreateUserTest extends UserControllerTestCase
     /**
      * @test
      */
+    public function userCannotShowCreateUserPage(): void
+    {
+        // Given
+        $this->loginAsUser();
+
+        // When
+        $this->client->request('GET', '/users/create');
+        $response = $this->client->getResponse();
+
+        // Then
+        static::assertSame(403, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
     public function createUser(): void
     {
         // Given
+        $this->loginAsAdmin();
         $randomString = uniqid('', true);
 
         // When
-        $response = $this->submitForm('/users/create', 'Ajouter', [
+        $this->submitForm('/users/create', 'Ajouter', [
             'user_form' => [
                 'username' => $randomString,
                 'password' => [
@@ -41,8 +59,10 @@ class CreateUserTest extends UserControllerTestCase
                     'second' => $randomString,
                 ],
                 'email' => sprintf('%s@test.fr', $randomString),
+                'roles' => ['ROLE_USER'],
             ],
         ]);
+        $response = $this->client->getResponse();
         $newUser = $this->userRepository->findOneBy([
             'username' => $randomString,
         ]);
@@ -59,6 +79,7 @@ class CreateUserTest extends UserControllerTestCase
     public function createUserWithAlreadyExistedUsername(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -87,6 +108,7 @@ class CreateUserTest extends UserControllerTestCase
     public function createUserWithTooLongUsername(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -119,6 +141,7 @@ class CreateUserTest extends UserControllerTestCase
     public function createUserWithDifferentPasswords(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -148,6 +171,7 @@ class CreateUserTest extends UserControllerTestCase
     public function createUserWithBadFormatEmail(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -180,6 +204,7 @@ class CreateUserTest extends UserControllerTestCase
     public function createUserWithTooLongEmail(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -204,5 +229,38 @@ class CreateUserTest extends UserControllerTestCase
             'Le format de l&#039;adresse n&#039;est pas correcte.',
             $response->getContent()
         );
+    }
+
+    /**
+     * @test
+     */
+    public function createUserWithRoleAdmin(): void
+    {
+        // Given
+        $this->loginAsAdmin();
+        $randomString = uniqid('', true);
+
+        // When
+        $this->submitForm('/users/create', 'Ajouter', [
+            'user_form' => [
+                'username' => $randomString,
+                'password' => [
+                    'first' => $randomString,
+                    'second' => $randomString,
+                ],
+                'email' => sprintf('%s@test.fr', $randomString),
+                'roles' => ['ROLE_ADMIN'],
+            ],
+        ]);
+        $response = $this->client->getResponse();
+        $newUser = $this->userRepository->findOneBy([
+            'username' => $randomString,
+        ]);
+
+        // Then
+        static::assertInstanceOf(User::class, $newUser);
+        static::assertSame(['ROLE_ADMIN'], $newUser->getRoles());
+        static::assertSame(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/users'));
     }
 }

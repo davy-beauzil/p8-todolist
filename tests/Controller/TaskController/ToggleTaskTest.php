@@ -22,7 +22,7 @@ class ToggleTaskTest extends TaskControllerTestCase
     public function toggleTask(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $id = $this->task->getId();
         $isDone = $this->task->isDone;
 
@@ -63,7 +63,7 @@ class ToggleTaskTest extends TaskControllerTestCase
     public function toggleTaskWithInexistentId(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', '/tasks/bad-id/toggle');

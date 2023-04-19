@@ -22,7 +22,7 @@ class EditTaskTest extends TaskControllerTestCase
     public function showEditTaskPage(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/edit', $this->task->getId()));
@@ -57,7 +57,7 @@ class EditTaskTest extends TaskControllerTestCase
     public function showEditTaskPageWithInexistentId(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', '/tasks/bad-id/edit');
@@ -73,7 +73,7 @@ class EditTaskTest extends TaskControllerTestCase
     public function editTask(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $randomString = uniqid(__FUNCTION__, true);
         $id = $this->task->getId();
 
@@ -102,7 +102,7 @@ class EditTaskTest extends TaskControllerTestCase
     public function editTaskWithoutBeLoggedIn(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $randomString = uniqid(__FUNCTION__, true);
         $id = $this->task->getId();
 
@@ -133,7 +133,7 @@ class EditTaskTest extends TaskControllerTestCase
     public function editTaskNotValid(string $title, string $content): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $id = $this->task->getId();
 
         // When
