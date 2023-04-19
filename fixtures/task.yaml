@@ -4,3 +4,16 @@ App\Entity\Task:
         content: <paragraph(1)>
         createdAt: <date_create()>
         isDone: <boolval(1)>
+        author: '@davy'
+    task_{21..40}:
+        title: <sentence(3)>
+        content: <paragraph(1)>
+        createdAt: <date_create()>
+        isDone: <boolval(1)>
+        author: '@john'
+    task_{41..60}:
+        title: <sentence(3)>
+        content: <paragraph(1)>
+        createdAt: <date_create()>
+        isDone: <boolval(1)>
+        author: null

@@ -14,7 +14,7 @@ final class Version20230412203143 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'add roles on user';
     }
 
     public function up(Schema $schema): void

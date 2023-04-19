@@ -8,14 +8,6 @@ use App\Entity\Task;
 
 class DeleteTaskTest extends TaskControllerTestCase
 {
-    protected Task $task;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->task = $this->taskRepository->findBy([], limit: 1)[0];
-    }
-
     /**
      * @test
      */
@@ -23,7 +15,7 @@ class DeleteTaskTest extends TaskControllerTestCase
     {
         // Given
         $this->loginAsUser();
-        $id = $this->task->getId();
+        $id = $this->userTask->getId();
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
@@ -45,7 +37,7 @@ class DeleteTaskTest extends TaskControllerTestCase
     public function deleteTaskWithoutBeLoggedIn(): void
     {
         // Given
-        $id = $this->task->getId();
+        $id = $this->userTask->getId();
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
@@ -70,5 +62,50 @@ class DeleteTaskTest extends TaskControllerTestCase
 
         // Then
         static::assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function adminCanDeleteTaskWithoutAuthor(): void
+    {
+        // Given
+        $this->loginAsAdmin();
+        $id = $this->adminTask->getId();
+
+        // When
+        $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
+        $response = $this->client->getResponse();
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertNull($updatedTask);
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
+    }
+
+    /**
+     * @test
+     */
+    public function userCannotDeleteTaskWithoutAuthor(): void
+    {
+        // Given
+        $this->loginAsUser();
+        $id = $this->adminTask->getId();
+
+        // When
+        $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
+        $response = $this->client->getResponse();
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertNotNull($updatedTask);
+        static::assertEquals(403, $response->getStatusCode());
     }
 }

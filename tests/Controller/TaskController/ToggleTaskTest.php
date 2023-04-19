@@ -8,14 +8,6 @@ use App\Entity\Task;
 
 class ToggleTaskTest extends TaskControllerTestCase
 {
-    protected Task $task;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-        $this->task = $this->taskRepository->findBy([], [], 1)[0];
-    }
-
     /**
      * @test
      */
@@ -23,8 +15,8 @@ class ToggleTaskTest extends TaskControllerTestCase
     {
         // Given
         $this->loginAsUser();
-        $id = $this->task->getId();
-        $isDone = $this->task->isDone;
+        $id = $this->userTask->getId();
+        $isDone = $this->userTask->isDone;
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
@@ -46,7 +38,7 @@ class ToggleTaskTest extends TaskControllerTestCase
     public function toggleTaskWithoutBeLoggedIn(): void
     {
         // Given
-        $id = $this->task->getId();
+        $id = $this->userTask->getId();
 
         // When
         $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
@@ -71,5 +63,46 @@ class ToggleTaskTest extends TaskControllerTestCase
 
         // Then
         static::assertEquals(404, $response->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function adminCanToggleTaskWithoutAuthor(): void
+    {
+        // Given
+        $this->loginAsAdmin();
+        $id = $this->adminTask->getId();
+        $isDone = $this->adminTask->isDone;
+
+        // When
+        $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
+        $response = $this->client->getResponse();
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertSame(! $isDone, $updatedTask->isDone);
+        static::assertEquals(302, $response->getStatusCode());
+        static::assertTrue($response->isRedirect('/tasks'));
+    }
+
+    /**
+     * @test
+     */
+    public function userCannotToggleTaskWithoutAuthor(): void
+    {
+        // Given
+        $this->loginAsUser();
+        $id = $this->adminTask->getId();
+
+        // When
+        $this->client->request('GET', sprintf('/tasks/%s/toggle', $id));
+        $response = $this->client->getResponse();
+
+        // Then
+        static::assertEquals(403, $response->getStatusCode());
     }
 }

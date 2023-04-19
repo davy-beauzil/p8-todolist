@@ -1,5 +1,5 @@
 parameters:
-    hash: $2y$13$u52krWp5LNvu3K5f8/EYM.rDXP.rGUYIYHqVvogKPwVOsrU5Qzmnu
+    hash: $2y$13$vsY7U6Cj7M0h90GBKufsTeMSwfOy8qK6JKid92ZzZBXudkSkqHyFq # password: test
 
 App\Entity\User:
     user_{1..20}:

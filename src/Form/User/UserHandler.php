@@ -6,6 +6,7 @@ namespace App\Form\User;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,12 @@ class UserHandler
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var User $user */
             $user = $form->getData();
+
+            if ($user->password === null) {
+                $form->addError(new FormError('Vous devez saisir un mot de passe.'));
+                return false;
+            }
+
             $user->password = $this->hasher->hashPassword($user, $user->password);
             $this->userRepository->save($user);
 

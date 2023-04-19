@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Controller\TaskController;
 
+use App\Entity\Task;
+
 class CreateTaskTest extends TaskControllerTestCase
 {
     /**
@@ -62,7 +64,8 @@ class CreateTaskTest extends TaskControllerTestCase
         ]);
 
         // Then
-        static::assertNotNull($task);
+        static::assertInstanceOf(Task::class, $task);
+        static::assertSame('john', $task->author->username);
         static::assertEquals(302, $response->getStatusCode());
         static::assertTrue($response->isRedirect('/tasks'));
     }
