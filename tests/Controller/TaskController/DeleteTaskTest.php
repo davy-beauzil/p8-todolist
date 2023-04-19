@@ -108,4 +108,26 @@ class DeleteTaskTest extends TaskControllerTestCase
         static::assertNotNull($updatedTask);
         static::assertEquals(403, $response->getStatusCode());
     }
+
+    /**
+     * @test
+     */
+    public function adminCannotDeleteTaskOfOtherUser(): void
+    {
+        // Given
+        $this->loginAsAdmin();
+        $id = $this->userTask->getId();
+
+        // When
+        $this->client->request('GET', sprintf('/tasks/%s/delete', $id));
+        $response = $this->client->getResponse();
+        /** @var Task $updatedTask */
+        $updatedTask = $this->taskRepository->findOneBy([
+            'id' => $id,
+        ]);
+
+        // Then
+        static::assertNotNull($updatedTask);
+        static::assertEquals(403, $response->getStatusCode());
+    }
 }
