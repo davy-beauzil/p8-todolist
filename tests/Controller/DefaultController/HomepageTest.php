@@ -14,13 +14,10 @@ class HomepageTest extends AbstractWebTestCase
     public function showHomePage(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
-        $this->client->request('GET', '/', [], [], [
-            'PHP_AUTH_USER' => 'davy',
-            'PHP_AUTH_PW' => 'test@1234',
-        ]);
+        $this->client->request('GET', '/');
         $response = $this->client->getResponse();
         $content = $response->getContent();
 

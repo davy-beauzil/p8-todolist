@@ -12,7 +12,7 @@ class ListTasksTest extends TaskControllerTestCase
     public function listTasks(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', '/tasks');

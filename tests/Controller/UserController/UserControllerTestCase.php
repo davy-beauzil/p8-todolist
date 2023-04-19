@@ -7,6 +7,7 @@ namespace App\Tests\Controller\UserController;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Tests\AbstractWebTestCase;
+use Symfony\Component\HttpFoundation\Response;
 
 class UserControllerTestCase extends AbstractWebTestCase
 {
@@ -30,5 +31,22 @@ class UserControllerTestCase extends AbstractWebTestCase
             ->setMaxResults(1)
             ->getQuery()
             ->getResult()[0];
+    }
+
+    public function submitForm(string $route, string $button, array $data, bool $loggedIn = true): Response
+    {
+        $crawler = $this->client->request('GET', $route);
+
+        if (! $loggedIn) {
+            $this->client->getCookieJar()
+                ->clear();
+        }
+
+        $form = $crawler->selectButton($button)
+            ->form()
+            ->disableValidation();
+        $this->client->submit($form, $data);
+
+        return $this->client->getResponse();
     }
 }

@@ -12,7 +12,7 @@ class CreateTaskTest extends TaskControllerTestCase
     public function showCreateTaskPage(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', '/tasks/create');
@@ -46,7 +46,7 @@ class CreateTaskTest extends TaskControllerTestCase
     public function createTask(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $randomString = uniqid(__FUNCTION__, true);
 
         // When
@@ -73,7 +73,7 @@ class CreateTaskTest extends TaskControllerTestCase
     public function createTaskWithoutBeLoggedIn(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $randomString = uniqid(__FUNCTION__, true);
 
         // When
@@ -102,7 +102,7 @@ class CreateTaskTest extends TaskControllerTestCase
     public function createTaskNotValid(string $title, string $content): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $response = $this->submitForm('/tasks/create', 'Ajouter', [

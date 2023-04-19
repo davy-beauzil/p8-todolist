@@ -22,7 +22,7 @@ class DeleteTaskTest extends TaskControllerTestCase
     public function deleteTask(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
         $id = $this->task->getId();
 
         // When
@@ -62,7 +62,7 @@ class DeleteTaskTest extends TaskControllerTestCase
     public function deleteTaskWithInexistentId(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsUser();
 
         // When
         $this->client->request('GET', '/tasks/bad-id/delete');

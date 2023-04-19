@@ -22,6 +22,7 @@ class EditUserTest extends UserControllerTestCase
     public function showEditUserPage(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $this->client->request('GET', sprintf('/users/%s/edit', $this->user->getId()));
@@ -39,6 +40,7 @@ class EditUserTest extends UserControllerTestCase
     public function showEditUserPageWithInexistentId(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $this->client->request('GET', '/users/bad-id/edit');
@@ -54,7 +56,7 @@ class EditUserTest extends UserControllerTestCase
     public function editUser(): void
     {
         // Given
-        $this->logIn();
+        $this->loginAsAdmin();
         $randomString = uniqid('', true);
 
         // When
@@ -66,6 +68,7 @@ class EditUserTest extends UserControllerTestCase
                     'second' => $randomString,
                 ],
                 'email' => sprintf('%s@test.fr', $randomString),
+                'roles' => ['ROLE_USER'],
             ],
         ]);
         /** @var User $updatedUser */
@@ -86,6 +89,7 @@ class EditUserTest extends UserControllerTestCase
     public function editUserTooLongUsername(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
@@ -96,6 +100,7 @@ class EditUserTest extends UserControllerTestCase
                     'second' => 'password',
                 ],
                 'email' => 'email@test.fr',
+                'roles' => ['ROLE_USER'],
             ],
         ]);
         $user = $this->userRepository->findOneBy([
@@ -118,6 +123,7 @@ class EditUserTest extends UserControllerTestCase
     public function editUserWithDifferentPasswords(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
@@ -128,6 +134,7 @@ class EditUserTest extends UserControllerTestCase
                     'second' => 'password-2',
                 ],
                 'email' => 'email@test.fr',
+                'roles' => ['ROLE_USER'],
             ],
         ]);
         $user = $this->userRepository->findOneBy([
@@ -147,6 +154,7 @@ class EditUserTest extends UserControllerTestCase
     public function editUserWithBadFormatEmail(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm('/users/create', 'Ajouter', [
@@ -157,6 +165,7 @@ class EditUserTest extends UserControllerTestCase
                     'second' => 'password',
                 ],
                 'email' => 'bad-email',
+                'roles' => ['ROLE_USER'],
             ],
         ]);
         $user = $this->userRepository->findOneBy([
@@ -179,6 +188,7 @@ class EditUserTest extends UserControllerTestCase
     public function editUserWithTooLongEmail(): void
     {
         // Given
+        $this->loginAsAdmin();
 
         // When
         $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
@@ -189,6 +199,7 @@ class EditUserTest extends UserControllerTestCase
                     'second' => 'password',
                 ],
                 'email' => 'un-très-très-très-très-très-très-très-très-très-long-email@test.fr',
+                'roles' => ['ROLE_USER'],
             ],
         ]);
         $user = $this->userRepository->findOneBy([
