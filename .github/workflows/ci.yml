@@ -1,0 +1,48 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CI
+
+# Controls when the workflow will run
+on: [push]
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+    tests:
+        runs-on: ${{ matrix.operating-system }}
+        strategy:
+            matrix:
+                operating-system: [ ubuntu-latest ]
+                php-versions: ['8.1']
+        name: PHP ${{ matrix.php-versions }} Test on ${{ matrix.operating-system }}
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
+
+            - name: Setup PHP, with composer and extensions
+              uses: shivammathur/setup-php@v2
+              with:
+                  php-version: ${{ matrix.php-versions }}
+                  extensions: json, mbstring, openssl, sqlite3, curl, uuid
+                  coverage: xdebug
+
+            - name: Install Composer dependencies
+              run: |
+                  composer update --no-progress --no-suggest --prefer-dist --optimize-autoloader
+
+            - name: Initial setup
+              run: docker ps && make install
+
+            - name: PhpUnit tests
+              run: vendor/bin/phpunit
+
+            - name: PHPStan
+              run: vendor/bin/phpstan analyse
+
+            - name: ECS
+              run: vendor/bin/ecs check
+
+            - name: rector
+              run: vendor/bin/rector process --dry-run
