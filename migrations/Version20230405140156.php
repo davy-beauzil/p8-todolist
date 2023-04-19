@@ -14,7 +14,7 @@ final class Version20230405140156 extends AbstractMigration
 {
     public function getDescription(): string
     {
-        return '';
+        return 'Change id auto increment to string';
     }
 
     public function up(Schema $schema): void

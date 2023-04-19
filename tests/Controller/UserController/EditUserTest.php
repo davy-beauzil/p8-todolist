@@ -25,7 +25,7 @@ class EditUserTest extends UserControllerTestCase
         $this->loginAsAdmin();
 
         // When
-        $this->client->request('GET', sprintf('/users/%s/edit', $this->user->getId()));
+        $this->client->request('GET', sprintf('/users/%s/edit', $this->user->id));
         $response = $this->client->getResponse();
 
         // Then
@@ -60,7 +60,7 @@ class EditUserTest extends UserControllerTestCase
         $randomString = uniqid('', true);
 
         // When
-        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
+        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->id), 'Modifier', [
             'user_form' => [
                 'username' => $randomString,
                 'password' => [
@@ -92,7 +92,7 @@ class EditUserTest extends UserControllerTestCase
         $this->loginAsAdmin();
 
         // When
-        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
+        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->id), 'Modifier', [
             'user_form' => [
                 'username' => 'un-très-très-très-long-username',
                 'password' => [
@@ -126,7 +126,7 @@ class EditUserTest extends UserControllerTestCase
         $this->loginAsAdmin();
 
         // When
-        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
+        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->id), 'Modifier', [
             'user_form' => [
                 'username' => 'username',
                 'password' => [
@@ -191,7 +191,7 @@ class EditUserTest extends UserControllerTestCase
         $this->loginAsAdmin();
 
         // When
-        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->getId()), 'Modifier', [
+        $response = $this->submitForm(sprintf('/users/%s/edit', $this->user->id), 'Modifier', [
             'user_form' => [
                 'username' => 'username',
                 'password' => [

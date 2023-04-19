@@ -7,6 +7,7 @@ namespace App\Controller;
 use App\Entity\Task;
 use App\Form\Task\TaskHandler;
 use App\Repository\TaskRepository;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -28,12 +29,13 @@ class TaskController extends AbstractController
         ]);
     }
 
+    #[Security('is_granted("IS_AUTHENTICATED_FULLY")')]
     #[Route(path: '/tasks/create', name: 'task_create')]
     public function create(Request $request): Response
     {
         $task = new Task();
         $form = $this->taskHandler->prepare($task);
-        $isCreated = $this->taskHandler->handle($form, $request);
+        $isCreated = $this->taskHandler->handleCreate($form, $request);
 
         if ($isCreated) {
             $this->addFlash('success', 'La tâche a été bien été ajoutée.');
@@ -45,11 +47,14 @@ class TaskController extends AbstractController
         ]);
     }
 
+    #[Security(
+        '(task.author === null and is_granted("ROLE_ADMIN")) or (task.author !== null and task.author === user)'
+    )]
     #[Route(path: '/tasks/{id}/edit', name: 'task_edit')]
     public function edit(Task $task, Request $request): Response
     {
         $form = $this->taskHandler->prepare($task);
-        $isUpdated = $this->taskHandler->handle($form, $request);
+        $isUpdated = $this->taskHandler->handleUpdate($form, $request);
 
         if ($isUpdated) {
             $this->addFlash('success', 'La tâche a bien été modifiée.');
@@ -62,6 +67,9 @@ class TaskController extends AbstractController
         ]);
     }
 
+    #[Security(
+        '(task.author === null and is_granted("ROLE_ADMIN")) or (task.author !== null and task.author === user)'
+    )]
     #[Route(path: '/tasks/{id}/toggle', name: 'task_toggle')]
     public function toggle(Task $task): Response
     {
@@ -72,6 +80,9 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
+    #[Security(
+        '(task.author === null and is_granted("ROLE_ADMIN")) or (task.author !== null and task.author === user)'
+    )]
     #[Route(path: '/tasks/{id}/delete', name: 'task_delete')]
     public function delete(Task $task): Response
     {

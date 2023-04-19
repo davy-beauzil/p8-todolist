@@ -34,6 +34,9 @@ class Task
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     public DateTime $createdAt;
 
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    public ?User $author = null;
+
     #[ORM\Column(type: Types::STRING)]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'NONE')]

@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -18,13 +20,18 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\HasLifecycleCallbacks]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    #[ORM\Column(type: Types::STRING)]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: 'NONE')]
+    public string $id;
+
     #[ORM\Column(type: Types::STRING, length: 25, unique: true)]
     #[Assert\Length(max: 25, maxMessage: "Le nom d'utilisateur peut faire jusqu'à 25 caractères")]
     #[Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur.")]
     public string $username;
 
     #[ORM\Column(type: Types::STRING)]
-    public string $password;
+    public ?string $password = null;
 
     #[ORM\Column(type: Types::STRING, length: 60, unique: true)]
     #[Assert\Length(max: 60)]
@@ -36,14 +43,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON)]
     public array $roles;
 
-    #[ORM\Column(type: Types::STRING)]
-    #[ORM\Id]
-    #[ORM\GeneratedValue(strategy: 'NONE')]
-    private string $id;
+    /**
+     * @var \Doctrine\Common\Collections\Collection<int, \App\Entity\Task>|\App\Entity\Task[]
+     */
+    #[ORM\OneToMany(mappedBy: 'author', targetEntity: Task::class)]
+    public Collection $tasks;
 
-    public function getId(): string
+    public function __construct()
     {
-        return $this->id;
+        $this->tasks = new ArrayCollection();
     }
 
     #[ORM\PrePersist]
@@ -69,11 +77,32 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function eraseCredentials(): void
     {
-        unset($this->password);
     }
 
     public function getUserIdentifier(): string
     {
         return $this->username;
+    }
+
+    public function addTask(Task $task): self
+    {
+        if (! $this->tasks->contains($task)) {
+            $this->tasks->add($task);
+            $task->author = $this;
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): self
+    {
+        if ($this->tasks->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->author === $this) {
+                $task->author = null;
+            }
+        }
+
+        return $this;
     }
 }
