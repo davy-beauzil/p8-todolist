@@ -1,5 +1,6 @@
 install:
 	docker compose up -d
+	composer install
 	yarn install
 	yarn build
 	sleep 15

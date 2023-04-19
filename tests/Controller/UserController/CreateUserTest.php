@@ -234,6 +234,36 @@ class CreateUserTest extends UserControllerTestCase
     /**
      * @test
      */
+    public function createUserWithNullPassword(): void
+    {
+        // Given
+        $this->loginAsAdmin();
+
+        // When
+        $response = $this->submitForm('/users/create', 'Ajouter', [
+            'user_form' => [
+                'username' => 'username',
+                'password' => [
+                    'first' => null,
+                    'second' => null,
+                ],
+                'email' => 'email@test.fr',
+            ],
+        ]);
+        $user = $this->userRepository->findOneBy([
+            'username' => 'username',
+            'email' => 'email@test.fr',
+        ]);
+
+        // Then
+        static::assertNull($user);
+        static::assertSame(200, $response->getStatusCode());
+        static::assertStringContainsString('Vous devez saisir un mot de passe', $response->getContent());
+    }
+
+    /**
+     * @test
+     */
     public function createUserWithRoleAdmin(): void
     {
         // Given
