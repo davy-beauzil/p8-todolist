@@ -15,6 +15,13 @@ git clone git@github.com:davy-beauzil/p8-todolist.git
 cd p8-todolist
 ```
 
+### Before initializing the project
+You must be sure the Mysql Service is not running on your machine. If it is, you must stop it.
+```bash
+# On linux
+sudo service mysql stop
+```
+
 ### Initialize the projet
 ```bash
 make install
@@ -28,6 +35,7 @@ make install
 ### Run the project
 ```bash
 symfony serve
+# Open the project on localhost:8000
 ```
 
 ## Contribute
